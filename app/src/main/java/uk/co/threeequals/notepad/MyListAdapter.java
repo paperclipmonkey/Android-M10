@@ -24,5 +24,17 @@ public class MyListAdapter extends SimpleCursorAdapter {
         // create the typeText textview
         TextView typeText = (TextView) view.findViewById(R.id.textSeverity);
         typeText.setText(cursor.getString(cursor.getColumnIndex(NotesDbAdapter.KEY_TYPE)));
+
+        switch (cursor.getString(cursor.getColumnIndex(NotesDbAdapter.KEY_TYPE))){
+            case "important":
+                typeText.setTextColor(context.getResources().getColor(R.color.orange));
+                break;
+            case "urgent":
+                typeText.setTextColor(context.getResources().getColor(R.color.red));
+                break;
+            case "normal":
+                typeText.setTextColor(context.getResources().getColor(R.color.green));
+                break;
+        }
     }
 }
