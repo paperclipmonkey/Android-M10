@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     	android:layout_height="wrap_content">
 
-    <fragment android:name="com.android.demo.notepad3.ItemFragment"
+    <fragment android:name="uk.co.threeequals.notepad.ItemFragment"
         android:id="@+id/list"
         android:layout_weight="1"
         android:layout_width="match_parent"

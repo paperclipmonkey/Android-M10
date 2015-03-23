@@ -14,29 +14,15 @@
  * limitations under the License.
  */
 
-package com.android.demo.notepad3;
+package uk.co.threeequals.notepad;
 
-import android.app.ListActivity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.TextView;
 
-public class Notepadv3 extends ActionBarActivity  implements ItemFragment.OnFragmentInteractionListener {
+public class Notepad extends ActionBarActivity  implements ItemFragment.OnFragmentInteractionListener {
     private static final int ACTIVITY_CREATE=0;
     private static final int INSERT_ID = Menu.FIRST;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.demo.notepad3;
+package uk.co.threeequals.notepad;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -140,7 +140,7 @@ public class NoteEdit extends Activity {
         //TimeOffset in minutes
             String timeOffsetStr = mAlarmTimeout.getText().toString();
         try {
-            if (timeOffsetStr != "") {
+            if (timeOffsetStr.equals("")) {
                 int timeOffset = Integer.parseInt(timeOffsetStr);
 
                 Calendar cal = Calendar.getInstance(); // creates calendar
@@ -150,9 +150,7 @@ public class NoteEdit extends Activity {
 
                 alarm = cal.getTime();
             }
-        } catch (NumberFormatException e){
-
-        }
+        } catch (NumberFormatException e){}
 
         if (mRowId == null) {
             long id = mDbHelper.createNote(body, type, alarm);

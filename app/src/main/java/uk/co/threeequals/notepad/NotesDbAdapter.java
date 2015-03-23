@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.demo.notepad3;
+package uk.co.threeequals.notepad;
 
 import android.content.ContentValues;
 import android.content.Context;
