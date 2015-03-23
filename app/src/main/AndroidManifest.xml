@@ -10,5 +10,7 @@
             </intent-filter>
         </activity>
         <activity android:name="uk.co.threeequals.notepad.NoteEdit" />
+        <service android:name=".ScheduleService" />
+        <service android:name=".NotifyService" />
     </application>
 </manifest>

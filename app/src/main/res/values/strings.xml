@@ -9,4 +9,5 @@
     <string name="confirm">Save</string>
     <string name="edit_note">Edit Note</string>
     <string name="pick_time">Pick Time</string>
+    <string name="set_text">Optionally set an alarm</string>
 </resources>

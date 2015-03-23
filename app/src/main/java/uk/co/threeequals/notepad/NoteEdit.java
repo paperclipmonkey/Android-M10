@@ -20,6 +20,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,6 +45,9 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
     private Long mRowId;
     private NotesDbAdapter mDbHelper;
 
+    // This is a handle so that we can call methods on our service
+    private ScheduleClient scheduleClient;
+
     /**
      * On time picked event, converts hour and minutes values to milliseconds
      * milliseconds and sets a new value for the layout in the activity.
@@ -54,11 +60,26 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         cal = Calendar.getInstance(); // creates calendar
         cal.setTime(new Date()); // sets calendar time/date
         cal.set(Calendar.MINUTE, minute);
-        cal.set(Calendar.HOUR, hour);
+        cal.set(Calendar.HOUR_OF_DAY, hour);
 
         SimpleDateFormat format = new SimpleDateFormat("h:mm a");
         mAlarmTimeoutText.setText(format.format(cal.getTime()));
     }
+
+    /**
+     * This is the onClick called from the XML to set a new notification
+     */
+    public void onDateSelectedButtonClick(View v){
+        // Get the date from our datepicker
+        // Create a new calendar set to the date chosen
+        // we set the time to midnight (i.e. the first minute of that day)
+        // Ask our service to set an alarm for that date, this activity talks to the client that talks to the service
+        Log.d("Time", cal.getTimeInMillis() + "");
+        scheduleClient.setAlarmForNotification(cal);
+        // Notify the user what they just did
+        Toast.makeText(this, "Notification set", Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +88,6 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         mDbHelper.open();
 
         setContentView(R.layout.note_edit);
-        setTitle(R.string.edit_note);
 
         mBodyText = (EditText) findViewById(R.id.body);
         mAlarmTimeout = (LinearLayout) findViewById(R.id.alarm);
@@ -106,6 +126,9 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
             }
 
         });
+
+        scheduleClient = new ScheduleClient(this);
+        scheduleClient.doBindService();
     }
 
     private void populateFields() {
@@ -135,6 +158,15 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         super.onSaveInstanceState(outState);
         saveState();
         outState.putSerializable(NotesDbAdapter.KEY_ROWID, mRowId);
+    }
+
+    @Override
+    protected void onStop() {
+        // When our activity is stopped ensure we also stop the connection to the service
+        // this stops us leaking our activity into the system *bad*
+        if(scheduleClient != null)
+            scheduleClient.doUnbindService();
+        super.onStop();
     }
 
     @Override
