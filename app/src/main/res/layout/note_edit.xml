@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+    <EditText android:id="@+id/body" android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:scrollbars="vertical"
+        android:layout_margin="@dimen/horizontal_padding" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:ems="10"
+        android:id="@+id/alarm"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/type"
+        android:layout_margin="@dimen/horizontal_padding">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="normal"
+            android:id="@+id/radio_normal"
+            android:layout_marginLeft="@dimen/horizontal_padding" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="important"
+            android:id="@+id/radio_important"
+            android:layout_marginLeft="@dimen/horizontal_padding" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="urgent"
+            android:id="@+id/radio_urgent"
+            android:layout_marginLeft="@dimen/horizontal_padding" />
+
+    </RadioGroup>
+
+    <Button android:id="@+id/confirm"
+	  android:text="@string/confirm"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+        android:layout_margin="@dimen/horizontal_padding" />
+
+</LinearLayout>
