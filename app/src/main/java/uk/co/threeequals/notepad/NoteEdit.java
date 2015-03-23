@@ -61,9 +61,12 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         cal.setTime(new Date()); // sets calendar time/date
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.HOUR_OF_DAY, hour);
+        showTime(cal);
+    }
 
+    public void showTime(Calendar cl){
         SimpleDateFormat format = new SimpleDateFormat("h:mm a");
-        mAlarmTimeoutText.setText(format.format(cal.getTime()));
+        mAlarmTimeoutText.setText(format.format(cl.getTime()));
     }
 
     /**
@@ -148,6 +151,15 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
             if(note.getString(note.getColumnIndexOrThrow(NotesDbAdapter.KEY_TYPE)).compareTo("important") == 0){
                 mTypeRadio.check(R.id.radio_important);
             }
+
+            String time = note.getString(
+                    note.getColumnIndexOrThrow(NotesDbAdapter.KEY_ALARM));
+            if(time!= null && !time.equals("")) {
+                cal = Calendar.getInstance(); // creates calendar
+                cal.setTime(new Date((Long.parseLong(time)))); // sets calendar time/date
+                //Update the TextView
+                showTime(cal);
+            }
         } else {
             mTypeRadio.check(R.id.radio_normal);
         }
@@ -177,8 +189,14 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
 
 
     public void showTimePickerDialog(View v) {
-        //DialogFragment newFragment = new TimePickerFragment();
-        DialogFragment newFragment = TimePickerFragment.newInstance(0, 11, 43);
+        DialogFragment newFragment;
+        if(cal != null){
+            int minutes = cal.get(Calendar.MINUTE);
+            int hours = cal.get(Calendar.HOUR_OF_DAY);
+            newFragment = TimePickerFragment.newInstance(0, hours, minutes);
+        } else {
+            newFragment = TimePickerFragment.newInstance(0, 11, 43);
+        }
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -204,19 +222,9 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         //TimeOffset in minutes
 
         String timeOffsetStr = "";//mAlarmTimeout.getText().toString();
-        try {
-            if (timeOffsetStr.equals("")) {
-                int timeOffset = Integer.parseInt(timeOffsetStr);
-
-                Calendar cal = Calendar.getInstance(); // creates calendar
-                cal.setTime(new Date()); // sets calendar time/date
-                cal.add(Calendar.MINUTE, timeOffset); // adds one hour
-                //cal.getTime(); // returns new date object, one hour in the future
-
-                alarm = cal.getTime();
-            }
-        } catch (NumberFormatException e){}
-
+        if(cal != null) {
+            alarm = cal.getTime();
+        }
         if (mRowId == null) {
             long id = mDbHelper.createNote(body, type, alarm);
             if (id > 0) {
