@@ -17,24 +17,60 @@
 package uk.co.threeequals.notepad;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
+import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class NoteEdit extends Activity {
+public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnTimePickedListener {
 
     private EditText mBodyText;
-    private EditText mAlarmTimeout;
+    private LinearLayout mAlarmTimeout;
+    private TextView mAlarmTimeoutText;
+    private Calendar cal;
+
     private RadioGroup mTypeRadio;
     private Long mRowId;
     private NotesDbAdapter mDbHelper;
+
+    /**
+     * On time picked event, converts hour and minutes values to milliseconds
+     * milliseconds and sets a new value for the layout in the activity.
+     * @param hour          Hour value.
+     * @param minute        Minutes value.
+     */
+    @Override
+
+    public void onTimePicked(int hour, int minute) {
+        cal = Calendar.getInstance(); // creates calendar
+        cal.setTime(new Date()); // sets calendar time/date
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.HOUR, hour);
+
+        SimpleDateFormat format = new SimpleDateFormat("h:mm a");
+        mAlarmTimeoutText.setText(format.format(cal.getTime()));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +82,8 @@ public class NoteEdit extends Activity {
         setTitle(R.string.edit_note);
 
         mBodyText = (EditText) findViewById(R.id.body);
-        mAlarmTimeout = (EditText) findViewById(R.id.alarm);
+        mAlarmTimeout = (LinearLayout) findViewById(R.id.alarm);
+        mAlarmTimeoutText = (TextView) findViewById(R.id.alarmText);
         mTypeRadio = (RadioGroup) findViewById(R.id.type);
 
         Button confirmButton = (Button) findViewById(R.id.confirm);
@@ -118,6 +155,13 @@ public class NoteEdit extends Activity {
         saveState();
     }
 
+
+    public void showTimePickerDialog(View v) {
+        //DialogFragment newFragment = new TimePickerFragment();
+        DialogFragment newFragment = TimePickerFragment.newInstance(0, 11, 43);
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -138,7 +182,8 @@ public class NoteEdit extends Activity {
 
         Date alarm = null;
         //TimeOffset in minutes
-            String timeOffsetStr = mAlarmTimeout.getText().toString();
+
+        String timeOffsetStr = "";//mAlarmTimeout.getText().toString();
         try {
             if (timeOffsetStr.equals("")) {
                 int timeOffset = Integer.parseInt(timeOffsetStr);
@@ -146,7 +191,7 @@ public class NoteEdit extends Activity {
                 Calendar cal = Calendar.getInstance(); // creates calendar
                 cal.setTime(new Date()); // sets calendar time/date
                 cal.add(Calendar.MINUTE, timeOffset); // adds one hour
-                cal.getTime(); // returns new date object, one hour in the future
+                //cal.getTime(); // returns new date object, one hour in the future
 
                 alarm = cal.getTime();
             }

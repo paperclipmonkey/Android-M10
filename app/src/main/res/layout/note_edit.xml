@@ -10,14 +10,28 @@
 		android:scrollbars="vertical"
         android:layout_margin="@dimen/horizontal_padding" />
 
-    <EditText
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/alarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="time"
-        android:ems="10"
-        android:id="@+id/alarm"
-        android:visibility="gone"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pick_time"
+            android:onClick="showTimePickerDialog"
+            android:layout_weight="0.15" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/alarmText"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:layout_weight="0.15" />
+    </LinearLayout>
 
     <RadioGroup
         android:layout_width="match_parent"
