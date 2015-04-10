@@ -3,7 +3,6 @@ package uk.co.threeequals.notepad;
 /**
  * Created by michaelwaterworth on 23/03/15.
  */
-import android.R;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -72,7 +71,7 @@ public class NotifyService extends Service {
         // This is the 'title' of the notification
         CharSequence title = "Alarm";
         // This is the icon to use on the notification
-        int icon = R.drawable.ic_dialog_info;
+        int icon = android.R.drawable.ic_dialog_info;
         // This is the scrolling text of the notification
         CharSequence text = "Remember the note!";
         // What time to show on the notification

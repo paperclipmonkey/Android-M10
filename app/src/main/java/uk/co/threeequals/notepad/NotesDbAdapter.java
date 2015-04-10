@@ -1,17 +1,6 @@
-/*
- * Copyright (C) 2008 Google Inc.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+/**
+ * Michael 2015
+ * Database handler for notepad
  */
 
 package uk.co.threeequals.notepad;
@@ -23,7 +12,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import java.util.Date;
 
 /**
@@ -141,12 +129,12 @@ public class NotesDbAdapter {
 
     /**
      * Return a Cursor over the list of all notes in the database
-     * 
+     * Order by KEY_TYPE
      * @return Cursor over all notes
      */
     public Cursor fetchAllNotes() {
         return mDb.query(DATABASE_TABLE, new String[] {KEY_ROWID,
-                KEY_BODY, KEY_TYPE, KEY_ALARM}, null, null, null, null, null);
+                KEY_BODY, KEY_TYPE, KEY_ALARM}, null, null, null, null, KEY_TYPE + " DESC, " + KEY_ALARM + " DESC");
     }
 
     /**
@@ -180,8 +168,10 @@ public class NotesDbAdapter {
         ContentValues args = new ContentValues();
         args.put(KEY_BODY, body);
         args.put(KEY_TYPE, type);
-        if(alarm != null) {
+        if(alarm != null && alarm.compareTo(new Date(0L)) != 0) {
             args.put(KEY_ALARM, alarm.getTime());
+        } else {
+            args.put(KEY_ALARM, 0);
         }
         return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
     }

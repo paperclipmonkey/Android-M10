@@ -1,3 +1,6 @@
+/**
+ * Created by michaelwaterworth on 23/03/15.
+ */
 package uk.co.threeequals.notepad;
 
 import android.app.Activity;
@@ -44,6 +47,10 @@ public class ItemFragment extends ListFragment {
         refreshData();
     }
 
+    /**
+     * Refresh data in the fragment. Used when we know data back-end has been updated.
+     * Needs to trash and create new cursor
+     */
     public void refreshData(){
         c = db.fetchAllNotes();
         String[] from = new String[] { NotesDbAdapter.KEY_BODY, NotesDbAdapter.KEY_TYPE };
@@ -83,6 +90,12 @@ public class ItemFragment extends ListFragment {
         refreshData();
     }
 
+    /**
+     * When long holding a list item. Context menu for deleting.
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -90,6 +103,11 @@ public class ItemFragment extends ListFragment {
         menu.add(0, DELETE_ID, 0, R.string.menu_delete);
     }
 
+    /**
+     * When selecting a context menu item
+     * @param item
+     * @return
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch(item.getItemId()) {
@@ -116,14 +134,6 @@ public class ItemFragment extends ListFragment {
         Intent i = new Intent(this.getActivity(), NoteEdit.class);
         i.putExtra(NotesDbAdapter.KEY_ROWID, id);
         startActivityForResult(i, ACTIVITY_EDIT);
-//        if (null != mListener) {
-//            // Notify the active callbacks interface (the activity, if the
-//            // fragment is attached to one) that an item has been selected.
-////            c.moveToPosition(position);
-////            int cId = c.getColumnIndex(NotesDbAdapter.KEY_ROWID);
-////            mListener.onFragmentInteraction(c.getString(cId));
-//            id;
-//        }
     }
 
     /**

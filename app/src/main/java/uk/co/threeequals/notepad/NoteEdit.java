@@ -1,17 +1,6 @@
-/*
- * Copyright (C) 2008 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * Michael 2015
+ * Main Activity for editing Notes
  */
 
 package uk.co.threeequals.notepad;
@@ -33,6 +22,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnTimePickedListener {
 
@@ -64,8 +54,12 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         showTime(cal);
     }
 
+    /**
+     * Format and show time in view
+     * @param cl Calendar time to show
+     */
     public void showTime(Calendar cl){
-        SimpleDateFormat format = new SimpleDateFormat("h:mm a");
+        SimpleDateFormat format = new SimpleDateFormat("h:mm a", Locale.UK);
         mAlarmTimeoutText.setText(format.format(cl.getTime()));
     }
 
@@ -134,10 +128,13 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         scheduleClient.doBindService();
     }
 
+    /**
+     * Using cursor populate data entry fields with data from Db row
+     */
     private void populateFields() {
         if (mRowId != null) {
             Cursor note = mDbHelper.fetchNote(mRowId);
-            startManagingCursor(note);
+            startManagingCursor(note);//Using deprecated as the other option is a lot more code and overly complicated
 
             mBodyText.setText(note.getString(
                     note.getColumnIndexOrThrow(NotesDbAdapter.KEY_BODY)));
@@ -187,7 +184,10 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         saveState();
     }
 
-
+    /**
+     * Create a new date time picker dialog
+     * @param v
+     */
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment;
         if(cal != null){
@@ -206,9 +206,13 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
         populateFields();
     }
 
+    /**
+     * Save the activity state to the db
+     */
     private void saveState() {
         String body = mBodyText.getText().toString();
         String type = "";
+        Date alarm = null;
 
         if(mTypeRadio.getCheckedRadioButtonId()!=-1){
             int id= mTypeRadio.getCheckedRadioButtonId();
@@ -218,13 +222,10 @@ public class NoteEdit extends FragmentActivity implements TimePickerFragment.OnT
             type = (String) btn.getText();
         }
 
-        Date alarm = null;
-        //TimeOffset in minutes
-
-        String timeOffsetStr = "";//mAlarmTimeout.getText().toString();
-        if(cal != null) {
+        if(cal != null && type.equals("urgent")) {
             alarm = cal.getTime();
         }
+
         if (mRowId == null) {
             long id = mDbHelper.createNote(body, type, alarm);
             if (id > 0) {
